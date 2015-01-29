@@ -46,6 +46,7 @@ gulp.task('templatecache', function () {
 });
 
 gulp.task('optimize', ['templatecache'], function () {
+    var cssFilter = $.filter('**/*.css');
 
     gulp.src(['src/**/*.js', '.tmp/templates.js'])
         .pipe($.ngAnnotate({add: true, single_quotes: true}))
@@ -53,15 +54,20 @@ gulp.task('optimize', ['templatecache'], function () {
         //.pipe($.bytediff.start())
         //.pipe($.uglify({mangle: true}))
         //.pipe($.bytediff.stop(bytediffFormatter))
-
         .pipe(gulp.dest(paths.build))
         .pipe($.size());
 
-    //return del(['.tmp/']);
+    gulp.src(['src/**/*.css'])
+        .pipe($.bytediff.start())
+        .pipe($.csso())
+        .pipe($.bytediff.stop(bytediffFormatter))
+        .pipe(cssFilter.restore())
+        .pipe(gulp.dest(paths.build))
+        .pipe($.size());
 
 });
 
-gulp.task('build', ['optimize'], function () {
+gulp.task('build', ['optimize', 'bump'], function () {
 
 
 

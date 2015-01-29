@@ -1,6 +1,6 @@
 {
     "name": "angular-point-discussion-thread",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Simple discussion thread directive for angular-point.",
     "main": "dist/apDiscussionThread.js",
     "module": "angular-point",
