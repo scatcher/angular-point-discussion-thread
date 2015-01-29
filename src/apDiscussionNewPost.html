@@ -1,0 +1,26 @@
+<div class="row" ng-form="newPost">
+    <div class="col-xs-12">
+        <div class="form-group">
+            <textarea msd-elastic
+                      class="form-control"
+                      placeholder="Enter a comment..."
+                      ng-model="state[tempState]"></textarea>
+            <h5>
+                <small>
+                    <label class="pull-right">
+                        <a class="btn btn-primary btn-sm" href
+                                ng-disabled="state.negotiatingWithServer"
+                                ng-click="createPost(state[tempState], post)">
+                            <i class="fa fa-save"></i> Save
+                        </a>
+                        <a class="btn btn-default btn-sm" href
+                                ng-disabled="state.negotiatingWithServer"
+                                ng-click="clearTempVars()">
+                            <i class="fa fa-undo"></i> Clear
+                        </a>
+                    </label>
+                </small>
+            </h5>
+        </div>
+    </div>
+</div>
