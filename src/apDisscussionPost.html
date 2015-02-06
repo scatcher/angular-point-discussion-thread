@@ -4,12 +4,12 @@
         <small>
             <span class="post-by">{{ post.user.lookupValue }}</span>
             <span class="post-date">{{ post.created  | date:'short' }}</span>
-            <button class="btn btn-link btn-sm"
+            <button type="button" class="btn btn-link btn-sm"
                     ng-disabled="state.negotiatingWithServer"
                     ng-click="state.respondingTo = post">
                 <i class="fa fa-mail-reply"></i> Reply
             </button>
-            <button class="btn btn-link btn-sm"
+            <button type="button" class="btn btn-link btn-sm"
                     ng-disabled="state.negotiatingWithServer"
                     ng-click="deletePost(post)">
                 <i class="fa fa-trash-o"></i> Delete
