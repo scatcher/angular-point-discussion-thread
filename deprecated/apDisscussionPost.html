@@ -17,33 +17,17 @@
 
         </small>
     </blockquote>
-    <!--<div>-->
-        <!--<div class="post-header">-->
-            <!--<span class="post-by">{{ post.user.lookupValue }}</span>-->
-            <!--<span class="post-date">{{ post.modified  | date:'short' }}</span>-->
-            <!--<button class="btn btn-link btn-sm"-->
-                    <!--ng-disabled="state.negotiatingWithServer"-->
-                    <!--ng-click="state.respondingTo = post">-->
-                <!--<i class="fa fa-mail-reply"></i> Reply-->
-            <!--</button>-->
-            <!--<button class="btn btn-link btn-sm"-->
-                    <!--ng-disabled="state.negotiatingWithServer"-->
-                    <!--ng-click="deletePost(post)">-->
-                <!--<i class="fa fa-trash-o"></i> Delete-->
-            <!--</button>-->
-        <!--</div>-->
-        <!--<div class="post-body">-->
-            <!--<p class="post-text">{{ post.content }}</p>-->
-        <!--</div>-->
-    <!--</div>-->
+
     <div ng-if="state.respondingTo === post">
         <div ng-include="'apDiscussionNewPost.html'"
              ng-init="tempState = 'tempResponse'"></div>
     </div>
+
     <ul class="child-thread">
         <li ng-repeat="response in discussionObject.posts | filter:{parentId: post.id}">
             <div ng-include="'apDisscussionPost.html'"
                  ng-init="post = response; level = level + 1"></div>
         </li>
     </ul>
+
 </div>
