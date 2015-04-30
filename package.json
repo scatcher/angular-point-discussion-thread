@@ -1,6 +1,6 @@
 {
     "name": "angular-point-discussion-thread",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Simple discussion thread directive for angular-point.",
     "main": "ts/index.js",
     "module": "angular-point",

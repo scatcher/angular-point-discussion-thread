@@ -48,7 +48,6 @@ module ap.discussionThread {
      */
     export class Discussion{
         posts:Post[] = [];
-        nextId:number = 0;
         getListItem();
         getDiscussionAttributeName();
         constructor(listItem, discussionAttributeName) {
@@ -75,8 +74,12 @@ module ap.discussionThread {
             return newPost;
         }
         getNextId() {
-            this.nextId++;
-            return this.nextId;
+            var highestId = 0;
+            if(this.posts.length > 0) {
+                var lastPost = _.max(this.posts, (post) => post.id);
+                highestId = lastPost.id;
+            }
+            return highestId + 1;
         }
         prune() {
             /** Remove any blank posts prior to saving */
@@ -88,7 +91,8 @@ module ap.discussionThread {
         }
         saveChanges() {
             this.prune();
-            return this.getListItem().saveFields([this.getDiscussionAttributeName()]);
+            var listItem = this.getListItem();
+            return listItem.saveFields([this.getDiscussionAttributeName()]);
         }
     }
 
@@ -113,15 +117,18 @@ module ap.discussionThread {
             return this.savePost();
         }
         removePost() {
-            var index = this.getThread().posts.indexOf(this);
-            this.getThread().posts.splice(index, 1);
+            var thread = this.getThread();
+            var index = thread.posts.indexOf(this);
+            thread.posts.splice(index, 1);
         }
         reply(response) {
-            this.getThread().createPost(this.id, response);
+            var thread = this.getThread();
+            thread.createPost(this.id, response);
             return this.savePost();
         }
         savePost(){
-            return this.getThread().saveChanges();
+            var thread = this.getThread();
+            return thread.saveChanges();
         }
     }
 
