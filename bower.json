@@ -1,21 +1,14 @@
 {
   "name": "angular-point-discussion-thread",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/scatcher/angular-point-discussion-thread",
   "authors": [
     "Scott Hatcher <scott@hatcher.solutions>"
   ],
   "description": "Simple discussion thread directive for angular-point.",
   "main": "ts/index.js",
-  "dependencies": {
-      "angular": "^1.4.0-rc.0",
-      "angularfire": "^1.0.0",
-      "lodash": "^3.2.0",
-      "angular-point": "^2.0.0"
-  },
-  "devDependencies": {
-    "angular-mocks": "^1.2"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "keywords": [
     "angular-point"
   ],
