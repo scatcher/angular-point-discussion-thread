@@ -5,3 +5,4 @@ bower_components/
 .tmp
 .grunt
 .DS_Store
+.settings
