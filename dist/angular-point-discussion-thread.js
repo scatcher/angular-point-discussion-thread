@@ -1,6 +1,3 @@
-angular.module("angularPoint").run(["$templateCache", function($templateCache) {$templateCache.put("ap-discussion-thread-new-post.html","<new-post class=\"row\" ng-form=\"newPost\">\n	<div class=\"col-xs-12\">\n		<div class=\"form-group\">\n			<textarea msd-elastic class=\"form-control\" placeholder=\"Enter a comment...\" ng-model=\"vm[tempState]\"></textarea>\n			<h5>\n				<small>\n					<label class=\"pull-right\">\n						<a class=\"btn btn-primary btn-sm\" href ng-disabled=\"vm.negotiatingWithServer\" ng-click=\"vm.createPost(vm[tempState], post)\">\n                            <i class=\"fa fa-save\"></i> Save\n                        </a>\n						<a class=\"btn btn-default btn-sm\" href ng-disabled=\"vm.negotiatingWithServer\" ng-click=\"vm.clearTempVars()\">\n                            <i class=\"fa fa-undo\"></i> Clear\n                        </a>\n					</label>\n				</small>\n			</h5>\n		</div>\n	</div>\n</new-post>");
-$templateCache.put("ap-discussion-thread-post.html","<div class=\"ap-discussion-post\">\n	<blockquote>\n		<p>{{ post.content }}</p>\n		<small>\n			<span class=\"post-by\">{{ post.user.lookupValue }}</span>\n			<span class=\"post-date\">{{ post.created | date:\'short\' }}</span>\n			<button type=\"button\" class=\"btn btn-link btn-sm\" ng-disabled=\"vm.negotiatingWithServer\"\n			ng-click=\"vm.respondingTo = post\">\n				<i class=\"fa fa-mail-reply\"></i>Reply</button>\n			<button type=\"button\" class=\"btn btn-link btn-sm\" ng-disabled=\"vm.negotiatingWithServer\" ng-click=\"vm.deletePost(post)\">\n				<i class=\"fa fa-trash-o\"></i>Delete</button>\n		</small>\n	</blockquote>\n	<div ng-if=\"vm.respondingTo === post\">\n		<div ng-include=\"\'ap-discussion-thread-new-post.html\'\" ng-init=\"tempState = \'tempResponse\'\"></div>\n	</div>\n	<ul class=\"child-thread\">\n		<li ng-repeat=\"response in vm.discussionObject.posts | filter:{parentId: post.id} track by response.id\">\n			<div ng-include=\"\'ap-discussion-thread-post.html\'\" ng-init=\"post = response; level = level + 1\"></div>\n		</li>\n	</ul>\n</div>\n");
-$templateCache.put("ap-discussion-thread.html","<style type=\"text/css\">\n	ul.ap-discussion-thread {\n	    list-style-type: none;\n	}\n	ul.ap-discussion-thread ul {\n	    list-style-type: none;\n	}\n</style>\n<fieldset>\n	<legend>\n		<small>New Post</small>\n	</legend>\n	<div ng-include=\"\'ap-discussion-thread-new-post.html\'\" ng-init=\"tempState = \'tempPost\'\"></div>\n</fieldset>\n<fieldset ng-if=\"vm.discussionObject.posts.length > 0\">\n	<legend>\n		<small>Discussion Thread</small>\n	</legend>\n	<ul class=\"ap-discussion-thread well well-sm\">\n		<li class=\"discussion-head\" ng-repeat=\"post in vm.discussionObject.posts | filter:{parentId: 0} track by post.id\" style=\"border-top-width: 1px;border-top-color: grey\">\n			<div ng-include=\"\'ap-discussion-thread-post.html\'\" ng-init=\"level = 0\"></div>\n		</li>\n	</ul>\n</fieldset>\n");}]);
 /// <reference path="../typings/ap.d.ts" />
 var ap;
 (function (ap) {
@@ -53,7 +50,7 @@ var ap;
 })(ap || (ap = {}));
 
 /// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="Discussion.ts" />
+/// <reference path="DiscussionThread.ts" />
 var ap;
 (function (ap) {
     var discussionThread;
@@ -162,7 +159,7 @@ var ap;
 
 /// <reference path="../typings/ap.d.ts" />
 /// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="Discussion.ts" />
+/// <reference path="DiscussionThread.ts" />
 var ap;
 (function (ap) {
     var discussionThread;
@@ -182,8 +179,9 @@ var ap;
                 $scope.$watch('listItem', function (newVal, oldVal) {
                     if (newVal) {
                         /** Use discussion thread factory to ensure we have a valid discussion object */
-                        _this.discussionObject = apDiscussionThreadFactory
-                            .createDiscussionObject(vm.listItem, vm.fieldName);
+                        // this.discussionObject = apDiscussionThreadFactory
+                        //     .createDiscussionObject(vm.listItem, vm.fieldName);
+                        vm.discussionObject = vm.listItem[vm.fieldName];
                         vm.posts = _this.discussionObject.posts;
                     }
                 });
@@ -203,7 +201,7 @@ var ap;
             };
             DiscussionThreadController.prototype.createPost = function (content, post) {
                 var _this = this;
-                if (content < 1) {
+                if (content.length < 1) {
                     discussionThread.toastr.warning('You need to add a comment before saving.');
                 }
                 else {
@@ -273,3 +271,6 @@ var ap;
 })(ap || (ap = {}));
 
 //# sourceMappingURL=angular-point-discussion-thread.js.map
+angular.module("angularPoint").run(["$templateCache", function($templateCache) {$templateCache.put("ap-discussion-thread-new-post.html","<new-post class=\"row\" ng-form=\"newPost\">\r\n	<div class=\"col-xs-12\">\r\n		<div class=\"form-group\">\r\n			<textarea msd-elastic class=\"form-control\" placeholder=\"Enter a comment...\" ng-model=\"vm[tempState]\"></textarea>\r\n			<h5>\r\n				<small>\r\n					<label class=\"pull-right\">\r\n						<a class=\"btn btn-primary btn-sm\" href ng-disabled=\"vm.negotiatingWithServer\" ng-click=\"vm.createPost(vm[tempState], post)\">\r\n                            <i class=\"fa fa-save\"></i> Save\r\n                        </a>\r\n						<a class=\"btn btn-default btn-sm\" href ng-disabled=\"vm.negotiatingWithServer\" ng-click=\"vm.clearTempVars()\">\r\n                            <i class=\"fa fa-undo\"></i> Clear\r\n                        </a>\r\n					</label>\r\n				</small>\r\n			</h5>\r\n		</div>\r\n	</div>\r\n</new-post>");
+$templateCache.put("ap-discussion-thread-post.html","<div class=\"ap-discussion-post\">\r\n	<blockquote>\r\n		<p>{{ post.content }}</p>\r\n		<small>\r\n			<span class=\"post-by\">{{ post.user.lookupValue }}</span>\r\n			<span class=\"post-date\">{{ post.created | date:\'short\' }}</span>\r\n			<button type=\"button\" class=\"btn btn-link btn-sm\" ng-disabled=\"vm.negotiatingWithServer\"\r\n			ng-click=\"vm.respondingTo = post\">\r\n				<i class=\"fa fa-mail-reply\"></i>Reply</button>\r\n			<button type=\"button\" class=\"btn btn-link btn-sm\" ng-disabled=\"vm.negotiatingWithServer\" ng-click=\"vm.deletePost(post)\">\r\n				<i class=\"fa fa-trash-o\"></i>Delete</button>\r\n		</small>\r\n	</blockquote>\r\n	<div ng-if=\"vm.respondingTo === post\">\r\n		<div ng-include=\"\'ap-discussion-thread-new-post.html\'\" ng-init=\"tempState = \'tempResponse\'\"></div>\r\n	</div>\r\n	<ul class=\"child-thread\">\r\n		<li ng-repeat=\"response in vm.discussionObject.posts | filter:{parentId: post.id} track by response.id\">\r\n			<div ng-include=\"\'ap-discussion-thread-post.html\'\" ng-init=\"post = response; level = level + 1\"></div>\r\n		</li>\r\n	</ul>\r\n</div>\r\n");
+$templateCache.put("ap-discussion-thread.html","<style type=\"text/css\">\r\n	ul.ap-discussion-thread {\r\n	    list-style-type: none;\r\n	}\r\n	ul.ap-discussion-thread ul {\r\n	    list-style-type: none;\r\n	}\r\n</style>\r\n<fieldset>\r\n	<legend>\r\n		<small>New Post</small>\r\n	</legend>\r\n	<div ng-include=\"\'ap-discussion-thread-new-post.html\'\" ng-init=\"tempState = \'tempPost\'\"></div>\r\n</fieldset>\r\n<fieldset ng-if=\"vm.discussionObject.posts.length > 0\">\r\n	<legend>\r\n		<small>Discussion Thread</small>\r\n	</legend>\r\n	<ul class=\"ap-discussion-thread well well-sm\">\r\n		<li class=\"discussion-head\" ng-repeat=\"post in vm.discussionObject.posts | filter:{parentId: 0} track by post.id\" style=\"border-top-width: 1px;border-top-color: grey\">\r\n			<div ng-include=\"\'ap-discussion-thread-post.html\'\" ng-init=\"level = 0\"></div>\r\n		</li>\r\n	</ul>\r\n</fieldset>\r\n");}]);

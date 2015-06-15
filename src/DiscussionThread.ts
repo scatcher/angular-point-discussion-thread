@@ -12,7 +12,7 @@ module ap.discussionThread {
         posts: Post[];
         prune(): void;
         reset(): void;
-        saveChanges();
+        saveChanges(): ng.IPromise<ap.IListItem<any>>;
     }
 	
 	/**
@@ -69,7 +69,7 @@ module ap.discussionThread {
         reset(): void {
             this.posts.length = 0;
         }
-        saveChanges() {
+        saveChanges(): ng.IPromise<ap.IListItem<any>> {
             this.prune();
             var listItem = this.getListItem();
             return listItem.saveFields([this.getDiscussionAttributeName()]);

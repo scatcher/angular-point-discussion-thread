@@ -1,5 +1,5 @@
 /// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="Discussion.ts" />
+/// <reference path="DiscussionThread.ts" />
 
 module ap.discussionThread {
     'use strict';
@@ -46,7 +46,7 @@ module ap.discussionThread {
             thread.posts.splice(index, 1);
         }
 
-        reply(response) {
+        reply(response: string) {
             var thread = this.getThread();
             thread.createPost(this.id, response);
             return this.savePost();

@@ -1,6 +1,6 @@
 /// <reference path="../typings/ap.d.ts" />
 /// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="Discussion.ts" />
+/// <reference path="DiscussionThread.ts" />
 
 
 module ap.discussionThread {
@@ -32,10 +32,7 @@ module ap.discussionThread {
 
             $scope.$watch('listItem', (newVal, oldVal) => {
                 if (newVal) {
-                    /** Use discussion thread factory to ensure we have a valid discussion object */
-                    this.discussionObject = apDiscussionThreadFactory
-                        .createDiscussionObject(vm.listItem, vm.fieldName);
-
+                    vm.discussionObject = vm.listItem[vm.fieldName];
                     vm.posts = this.discussionObject.posts;
                 }
             });
@@ -57,8 +54,8 @@ module ap.discussionThread {
             }
         }
 
-        createPost(content: String, post: Post) {
-            if (content < 1) {
+        createPost(content: string, post: Post) {
+            if (content.length < 1) {
                 toastr.warning('You need to add a comment before saving.');
             } else {
                 this.negotiatingWithServer = true;
