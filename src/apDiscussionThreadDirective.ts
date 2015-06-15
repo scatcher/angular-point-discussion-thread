@@ -1,10 +1,12 @@
-/// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="apDiscussionThreadDirectiveController.ts" />
+/// <reference path="../typings/ap.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 
 module ap.discussionThread {
     'use strict';
+    
+    
 
-    function APDiscussionThreadDirective() {
+    export var APDiscussionThreadDirective = () => {
         var directive = {
             controller: DiscussionThreadController,
             controllerAs: 'vm',
@@ -17,11 +19,5 @@ module ap.discussionThread {
         };
         return directive;
     }
-
-
-
-    angular
-        .module('angularPoint')
-        .directive('apDiscussionThread', APDiscussionThreadDirective);
 
 }

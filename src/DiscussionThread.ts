@@ -1,5 +1,5 @@
-/// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="Post.ts" />
+/// <reference path="../typings/ap.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 
 module ap.discussionThread {
     'use strict';

@@ -1,4 +1,111 @@
 /// <reference path="../typings/ap.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
+var ap;
+(function (ap) {
+    var discussionThread;
+    (function (discussionThread) {
+        'use strict';
+        discussionThread.APDiscussionThreadDirective = function () {
+            var directive = {
+                controller: discussionThread.DiscussionThreadController,
+                controllerAs: 'vm',
+                scope: {
+                    changeEvent: '=?',
+                    fieldName: '=?',
+                    listItem: '='
+                },
+                templateUrl: 'ap-discussion-thread.html'
+            };
+            return directive;
+        };
+    })(discussionThread = ap.discussionThread || (ap.discussionThread = {}));
+})(ap || (ap = {}));
+
+/// <reference path="../typings/ap.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
+var ap;
+(function (ap) {
+    var discussionThread;
+    (function (discussionThread) {
+        'use strict';
+        var DiscussionThreadController = (function () {
+            function DiscussionThreadController($scope, apDiscussionThreadFactory) {
+                var _this = this;
+                this.negotiatingWithServer = false;
+                this.respondingTo = '';
+                this.tempPost = '';
+                this.tempResponse = '';
+                var vm = this;
+                vm.changeEvent = $scope.changeEvent;
+                vm.fieldName = $scope.fieldName || 'discussionThread';
+                vm.listItem = $scope.listItem;
+                $scope.$watch('listItem', function (newVal, oldVal) {
+                    if (newVal) {
+                        vm.discussionObject = vm.listItem[vm.fieldName];
+                        vm.posts = _this.discussionObject.posts;
+                    }
+                });
+            }
+            DiscussionThreadController.prototype.clearTempVars = function () {
+                this.respondingTo = '';
+                this.tempPost = '';
+                this.tempResponse = '';
+            };
+            DiscussionThreadController.prototype.cleanup = function (event, content) {
+                this.clearTempVars();
+                this.negotiatingWithServer = false;
+                discussionThread.toastr.success('Discussion thread successfully updated.');
+                if (_.isFunction(this.changeEvent) && event) {
+                    this.changeEvent(event, content);
+                }
+            };
+            DiscussionThreadController.prototype.createPost = function (content, post) {
+                var _this = this;
+                if (content.length < 1) {
+                    discussionThread.toastr.warning('You need to add a comment before saving.');
+                }
+                else {
+                    this.negotiatingWithServer = true;
+                    if (post) {
+                        post.reply(content)
+                            .then(function () { return _this.cleanup('reply', content); });
+                    }
+                    else {
+                        /** Creating new top level post */
+                        this.discussionObject.createPost(null, content).savePost()
+                            .then(function () { return _this.cleanup('create', content); });
+                    }
+                }
+            };
+            DiscussionThreadController.prototype.deletePost = function (post) {
+                var _this = this;
+                var hasChildren = false;
+                _.each(this.discussionObject.posts, function (p) {
+                    if (p.parentId === post.id) {
+                        hasChildren = true;
+                        return;
+                    }
+                });
+                if (hasChildren) {
+                    discussionThread.toastr.warning('Unable to delete a comment with child responses.  Please ' +
+                        'remove all children first.');
+                    return;
+                }
+                var confirmation = window.confirm('Are you sure you want to delete this comment?');
+                if (confirmation) {
+                    this.negotiatingWithServer = true;
+                    post.deletePost()
+                        .then(function () { return _this.cleanup('delete'); });
+                }
+            };
+            return DiscussionThreadController;
+        })();
+        discussionThread.DiscussionThreadController = DiscussionThreadController;
+    })(discussionThread = ap.discussionThread || (ap.discussionThread = {}));
+})(ap || (ap = {}));
+
+/// <reference path="../typings/ap.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 var ap;
 (function (ap) {
     var discussionThread;
@@ -43,54 +150,11 @@ var ap;
             return DiscussionThreadFactory;
         })();
         discussionThread_1.DiscussionThreadFactory = DiscussionThreadFactory;
-        angular
-            .module('angularPoint')
-            .service('apDiscussionThreadFactory', DiscussionThreadFactory);
     })(discussionThread = ap.discussionThread || (ap.discussionThread = {}));
 })(ap || (ap = {}));
 
-/// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="DiscussionThread.ts" />
-var ap;
-(function (ap) {
-    var discussionThread;
-    (function (discussionThread) {
-        'use strict';
-        var Post = (function () {
-            function Post(post, thread) {
-                this.getThread = function () { return thread; };
-                _.assign(this, post);
-                if (_.isString(this.created)) {
-                    /** Convert stringified date back into JS date */
-                    this.created = discussionThread.moment(this.created).toDate();
-                }
-            }
-            Post.prototype.deletePost = function () {
-                this.removePost();
-                return this.savePost();
-            };
-            Post.prototype.removePost = function () {
-                var thread = this.getThread();
-                var index = thread.posts.indexOf(this);
-                thread.posts.splice(index, 1);
-            };
-            Post.prototype.reply = function (response) {
-                var thread = this.getThread();
-                thread.createPost(this.id, response);
-                return this.savePost();
-            };
-            Post.prototype.savePost = function () {
-                var thread = this.getThread();
-                return thread.saveChanges();
-            };
-            return Post;
-        })();
-        discussionThread.Post = Post;
-    })(discussionThread = ap.discussionThread || (ap.discussionThread = {}));
-})(ap || (ap = {}));
-
-/// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="Post.ts" />
+/// <reference path="../typings/ap.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 var ap;
 (function (ap) {
     var discussionThread;
@@ -158,115 +222,56 @@ var ap;
 })(ap || (ap = {}));
 
 /// <reference path="../typings/ap.d.ts" />
-/// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="DiscussionThread.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 var ap;
 (function (ap) {
     var discussionThread;
     (function (discussionThread) {
         'use strict';
-        var DiscussionThreadController = (function () {
-            function DiscussionThreadController($scope, apDiscussionThreadFactory) {
-                var _this = this;
-                this.negotiatingWithServer = false;
-                this.respondingTo = '';
-                this.tempPost = '';
-                this.tempResponse = '';
-                var vm = this;
-                vm.changeEvent = $scope.changeEvent;
-                vm.fieldName = $scope.fieldName || 'discussionThread';
-                vm.listItem = $scope.listItem;
-                $scope.$watch('listItem', function (newVal, oldVal) {
-                    if (newVal) {
-                        /** Use discussion thread factory to ensure we have a valid discussion object */
-                        // this.discussionObject = apDiscussionThreadFactory
-                        //     .createDiscussionObject(vm.listItem, vm.fieldName);
-                        vm.discussionObject = vm.listItem[vm.fieldName];
-                        vm.posts = _this.discussionObject.posts;
-                    }
-                });
-            }
-            DiscussionThreadController.prototype.clearTempVars = function () {
-                this.respondingTo = '';
-                this.tempPost = '';
-                this.tempResponse = '';
-            };
-            DiscussionThreadController.prototype.cleanup = function (event, content) {
-                this.clearTempVars();
-                this.negotiatingWithServer = false;
-                discussionThread.toastr.success('Discussion thread successfully updated.');
-                if (_.isFunction(this.changeEvent) && event) {
-                    this.changeEvent(event, content);
-                }
-            };
-            DiscussionThreadController.prototype.createPost = function (content, post) {
-                var _this = this;
-                if (content.length < 1) {
-                    discussionThread.toastr.warning('You need to add a comment before saving.');
-                }
-                else {
-                    this.negotiatingWithServer = true;
-                    if (post) {
-                        post.reply(content)
-                            .then(function () { return _this.cleanup('reply', content); });
-                    }
-                    else {
-                        /** Creating new top level post */
-                        this.discussionObject.createPost(null, content).savePost()
-                            .then(function () { return _this.cleanup('create', content); });
-                    }
-                }
-            };
-            DiscussionThreadController.prototype.deletePost = function (post) {
-                var _this = this;
-                var hasChildren = false;
-                _.each(this.discussionObject.posts, function (p) {
-                    if (p.parentId === post.id) {
-                        hasChildren = true;
-                        return;
-                    }
-                });
-                if (hasChildren) {
-                    discussionThread.toastr.warning('Unable to delete a comment with child responses.  Please ' +
-                        'remove all children first.');
-                    return;
-                }
-                var confirmation = window.confirm('Are you sure you want to delete this comment?');
-                if (confirmation) {
-                    this.negotiatingWithServer = true;
-                    post.deletePost()
-                        .then(function () { return _this.cleanup('delete'); });
-                }
-            };
-            return DiscussionThreadController;
-        })();
-        discussionThread.DiscussionThreadController = DiscussionThreadController;
+        angular
+            .module('angularPoint')
+            .service('apDiscussionThreadFactory', discussionThread.DiscussionThreadFactory)
+            .directive('apDiscussionThread', discussionThread.APDiscussionThreadDirective);
     })(discussionThread = ap.discussionThread || (ap.discussionThread = {}));
 })(ap || (ap = {}));
 
-/// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="apDiscussionThreadDirectiveController.ts" />
+/// <reference path="../typings/ap.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 var ap;
 (function (ap) {
     var discussionThread;
     (function (discussionThread) {
         'use strict';
-        function APDiscussionThreadDirective() {
-            var directive = {
-                controller: discussionThread.DiscussionThreadController,
-                controllerAs: 'vm',
-                scope: {
-                    changeEvent: '=?',
-                    fieldName: '=?',
-                    listItem: '='
-                },
-                templateUrl: 'ap-discussion-thread.html'
+        var Post = (function () {
+            function Post(post, thread) {
+                this.getThread = function () { return thread; };
+                _.assign(this, post);
+                if (_.isString(this.created)) {
+                    /** Convert stringified date back into JS date */
+                    this.created = discussionThread.moment(this.created).toDate();
+                }
+            }
+            Post.prototype.deletePost = function () {
+                this.removePost();
+                return this.savePost();
             };
-            return directive;
-        }
-        angular
-            .module('angularPoint')
-            .directive('apDiscussionThread', APDiscussionThreadDirective);
+            Post.prototype.removePost = function () {
+                var thread = this.getThread();
+                var index = thread.posts.indexOf(this);
+                thread.posts.splice(index, 1);
+            };
+            Post.prototype.reply = function (response) {
+                var thread = this.getThread();
+                thread.createPost(this.id, response);
+                return this.savePost();
+            };
+            Post.prototype.savePost = function () {
+                var thread = this.getThread();
+                return thread.saveChanges();
+            };
+            return Post;
+        })();
+        discussionThread.Post = Post;
     })(discussionThread = ap.discussionThread || (ap.discussionThread = {}));
 })(ap || (ap = {}));
 

@@ -1,5 +1,5 @@
-/// <reference path="apDiscussionThreadFactory.ts" />
-/// <reference path="DiscussionThread.ts" />
+/// <reference path="../typings/ap.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 
 module ap.discussionThread {
     'use strict';
@@ -23,7 +23,7 @@ module ap.discussionThread {
         id: number;
         parentId: number;
         user: ap.IUser;
-        getThread: Function;
+        getThread;
 
         constructor(post, thread) {
 
