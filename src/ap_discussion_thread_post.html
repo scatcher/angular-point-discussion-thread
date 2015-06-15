@@ -1,0 +1,22 @@
+<div class="ap-discussion-post">
+	<blockquote>
+		<p>{{ post.content }}</p>
+		<small>
+			<span class="post-by">{{ post.user.lookupValue }}</span>
+			<span class="post-date">{{ post.created | date:'short' }}</span>
+			<button type="button" class="btn btn-link btn-sm" ng-disabled="vm.negotiatingWithServer"
+			ng-click="vm.respondingTo = post">
+				<i class="fa fa-mail-reply"></i>Reply</button>
+			<button type="button" class="btn btn-link btn-sm" ng-disabled="vm.negotiatingWithServer" ng-click="vm.deletePost(post)">
+				<i class="fa fa-trash-o"></i>Delete</button>
+		</small>
+	</blockquote>
+	<div ng-if="vm.respondingTo === post">
+		<div ng-include="'ap_discussion_thread_new_post.html'" ng-init="tempState = 'tempResponse'"></div>
+	</div>
+	<ul class="child-thread">
+		<li ng-repeat="response in vm.discussionObject.posts | filter:{parentId: post.id} track by response.id">
+			<div ng-include="'ap_discussion_thread_post.html'" ng-init="post = response; level = level + 1"></div>
+		</li>
+	</ul>
+</div>

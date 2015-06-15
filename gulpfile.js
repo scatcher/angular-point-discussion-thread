@@ -1,86 +1,43 @@
 'use strict';
 
+/* jshint camelcase:false */
+//var concat = require('concat-stream');
+var fs = require('fs');
 var gulp = require('gulp');
-var gutil = require('gulp-util');
-var _ = require('lodash');
+//var inject = require('inject');
+var projectDir = __dirname + '/';
+var sourcemaps = require('gulp-sourcemaps');
+var typescript = require('gulp-typescript');
+var concat = require('gulp-concat');
+var pkg = require('./package.json');
+var templateCache = require('gulp-angular-templatecache');
+var fileName = pkg.name + '.js';
 
-var path = require('path');
-var tsd = require('tsd');
-var ts = require('gulp-typescript');
-var ngAnnotate = require('gulp-ng-annotate');
-var tsdJson = 'tsd.json';
-var tsdApi = new tsd.getAPI(tsdJson);
-
-
-var options = {
-    src: 'ts',
-    dist: 'dist',
-    tmp: '.tmp',
-    e2e: 'e2e',
-    errorHandler: function (title) {
-        return function (err) {
-            gutil.log(gutil.colors.red('[' + title + ']'), err.toString());
-            this.emit('end');
-        };
-    }
-};
-
-gulp.task('tsd:install', function () {
-    var bower = require('./bower.json');
-
-    var dependencies = [].concat(
-        Object.keys(bower.dependencies),
-        Object.keys(bower.devDependencies)
-    );
-
-    var query = new tsd.Query();
-    dependencies.forEach(function (dependency) {
-        query.addNamePattern(dependency);
-    });
-
-    var options = new tsd.Options();
-    options.resolveDependencies = true;
-    options.overwriteFiles = true;
-    options.saveBundle = true;
-
-    return tsdApi.readConfig()
-        .then(function () {
-            return tsdApi.select(query, options);
-        })
-        .then(function (selection) {
-            return tsdApi.install(selection, options);
-        })
-        .then(function (installResult) {
-            var written = Object.keys(installResult.written.dict);
-            var removed = Object.keys(installResult.removed.dict);
-            var skipped = Object.keys(installResult.skipped.dict);
-
-            written.forEach(function (dts) {
-                gutil.log('Definition file written: ' + dts);
-            });
-
-            removed.forEach(function (dts) {
-                gutil.log('Definition file removed: ' + dts);
-            });
-
-            skipped.forEach(function (dts) {
-                gutil.log('Definition file skipped: ' + dts);
-            });
-        });
+gulp.task('build', ['ts', 'template-cache'], function () {
+    return gulp.src(['.tmp/*.js', 'dist/' + fileName])
+        .pipe(concat(fileName))
+        .pipe(gulp.dest('dist'));
 });
 
-gulp.task('tsd:purge', function () {
-    return tsdApi.purge(true, true);
+gulp.task('ts', function () {
+//    var tsResult = gulp.src(paths.tsFiles)
+    var tsResult = gulp.src('src/*.ts')
+        .pipe(sourcemaps.init({loadMaps: true})) // This means sourcemaps will be generated
+        .pipe(typescript({
+            target: 'ES5',
+            sortOutput: true,
+            noExternalResolve: true,
+            typescript: require('typescript')
+        }));
+
+    return tsResult.js
+        .pipe(concat(fileName)) // You can use other plugins that also support gulp-sourcemaps
+        .pipe(sourcemaps.write('.', { sourceRoot: '/' })) // Now the sourcemaps are added along side the .js file
+        .pipe(gulp.dest('dist'));
 });
 
-gulp.task('tsd', ['tsd:install']);
-
-gulp.task('build', function() {
-    return gulp.src(options.src + '/**/*.ts')
-        .pipe(ts({
-            declarationFiles: true
-            //noExternalResolve: true
-        }))
-        .pipe(ngAnnotate({add: true, single_quotes: true}))
-        .pipe(gulp.dest(options.dist + '/'));
+gulp.task('template-cache', function () {
+    return gulp.src('src/**/*.html')
+        .pipe(templateCache({module: 'angularPoint'}))
+        .pipe(gulp.dest('.tmp'));
 });

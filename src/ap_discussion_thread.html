@@ -1,0 +1,24 @@
+<style type="text/css">
+	ul.ap-discussion-thread {
+	    list-style-type: none;
+	}
+	ul.ap-discussion-thread ul {
+	    list-style-type: none;
+	}
+</style>
+<fieldset>
+	<legend>
+		<small>New Post</small>
+	</legend>
+	<div ng-include="'ap_discussion_thread_new_post.html'" ng-init="tempState = 'tempPost'"></div>
+</fieldset>
+<fieldset ng-if="vm.discussionObject.posts.length > 0">
+	<legend>
+		<small>Discussion Thread</small>
+	</legend>
+	<ul class="ap-discussion-thread well well-sm">
+		<li class="discussion-head" ng-repeat="post in vm.discussionObject.posts | filter:{parentId: 0} track by post.id" style="border-top-width: 1px;border-top-color: grey">
+			<div ng-include="'ap_discussion_thread_post.html'" ng-init="level = 0"></div>
+		</li>
+	</ul>
+</fieldset>
