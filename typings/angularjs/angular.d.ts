@@ -1064,6 +1064,7 @@ declare module angular {
     ///////////////////////////////////////////////////////////////////////////
     interface IAnchorScrollService {
         (): void;
+        (hash: string): void;
         yOffset: any;
     }
 
@@ -1414,6 +1415,7 @@ declare module angular {
     * https://docs.angularjs.org/api/ng/service/$http#defaults
     */
     interface IHttpProviderDefaults {
+        cache?: boolean;
         xsrfCookieName?: string;
         xsrfHeaderName?: string;
         withCredentials?: boolean;

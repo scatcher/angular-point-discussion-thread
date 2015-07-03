@@ -4,30 +4,14 @@
 module ap.discussionThread {
     'use strict';
 
-    export interface IPost {
-        created: Date;
-        content: string;
-        deletePost: Function;
-        id: number;
-        getThread(): DiscussionThread;
-        parentId: number;
-        removePost: Function;
-        reply: Function;
-        savePost: Function;
-        user: ap.IUser;
-    }
-
-    export class Post implements IPost {
+    export class Post {
         created: Date;
         content: string;
         id: number;
         parentId: number;
         user: ap.IUser;
-        getThread;
 
-        constructor(post, thread) {
-
-            this.getThread = () => thread;
+        constructor(post) {
             _.assign(this, post);
             if (_.isString(this.created)) {
                 /** Convert stringified date back into JS date */
@@ -35,26 +19,23 @@ module ap.discussionThread {
             }
         }
 
-        deletePost() {
-            this.removePost();
-            return this.savePost();
+        deletePost(discussionThread: DiscussionThread) {
+            this.removePost(discussionThread);
+            return this.savePost(discussionThread);
         }
 
-        removePost(): void {
-            var thread = this.getThread();
-            var index = thread.posts.indexOf(this);
-            thread.posts.splice(index, 1);
+        removePost(discussionThread: DiscussionThread): void {
+            var index = discussionThread.posts.indexOf(this);
+            discussionThread.posts.splice(index, 1);
         }
 
-        reply(response: string) {
-            var thread = this.getThread();
-            thread.createPost(this.id, response);
-            return this.savePost();
+        reply(response: string, discussionThread: DiscussionThread) {
+            discussionThread.createPost(this.id, response);
+            return this.savePost(discussionThread);
         }
 
-        savePost() {
-            var thread = this.getThread();
-            return thread.saveChanges();
+        savePost(discussionThread: DiscussionThread) {
+            return discussionThread.saveChanges();
         }
     }
 }

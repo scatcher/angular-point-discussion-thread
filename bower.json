@@ -1,6 +1,6 @@
 {
     "name": "angular-point-discussion-thread",
-    "version": "2.0.5",
+    "version": "2.0.6",
     "main": "dist/angular-point-discussion-thread.js",
     "homepage": "https://github.com/scatcher/angular-point-discussion-thread",
     "authors": [
@@ -8,9 +8,9 @@
     ],
     "description": "Simple discussion thread directive for angular-point.",
     "dependencies": {
-        "angular": "^1.4.0",
+        "angular": "^1.4.1",
         "angular-point": "^3.2.0",
-        "lodash": "^3.7.0"
+        "lodash": "^3.10.0"
     },
     "keywords": [
         "angular-point"

@@ -15,7 +15,7 @@
 		<div ng-include="'ap-discussion-thread-new-post.html'" ng-init="tempState = 'tempResponse'"></div>
 	</div>
 	<ul class="child-thread">
-		<li ng-repeat="response in vm.discussionObject.posts | filter:{parentId: post.id} track by response.id">
+		<li ng-repeat="response in vm.discussionThread.posts | filter:{parentId: post.id} track by response.id">
 			<div ng-include="'ap-discussion-thread-post.html'" ng-init="post = response; level = level + 1"></div>
 		</li>
 	</ul>

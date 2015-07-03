@@ -7,17 +7,15 @@ module ap.discussionThread {
     interface IControllerScope extends ng.IScope {
         changeEvent?(action: string, content?: string): void;
         fieldName?: string;
-        listItem: ap.IListItem<any>;
+        listItem: ap.ListItem<any>;
     }
 
     export class DiscussionThreadController {
-        changeEvent(action: string, content?: string);
-
-        discussionObject: DiscussionThread;
+        changeEvent: (action: string, content?: string) => void;
+        discussionThread: DiscussionThread;
         fieldName: string;
         listItem: Object;
         negotiatingWithServer: boolean = false;
-        posts: Post[];
         respondingTo = '';
         tempPost = '';
         tempResponse = '';
@@ -28,11 +26,12 @@ module ap.discussionThread {
             vm.fieldName = $scope.fieldName || 'discussionThread';
             vm.listItem = $scope.listItem;
 
-            $scope.$watch('listItem', (newVal, oldVal) => {
+            $scope.$watch('listItem.' + vm.fieldName, (newVal, oldVal) => {
                 if (newVal) {
-                    vm.discussionObject = vm.listItem[vm.fieldName];
-                    vm.posts = this.discussionObject.posts;
+                    vm.discussionThread = newVal;
                 }
+
+                console.assert(newVal.posts === vm.listItem[vm.fieldName].posts);
             });
 
         }
@@ -58,11 +57,12 @@ module ap.discussionThread {
             } else {
                 this.negotiatingWithServer = true;
                 if (post) {
-                    post.reply(content)
+                    post.reply(content, this.discussionThread)
                         .then(() => this.cleanup('reply', content));
                 } else {
                     /** Creating new top level post */
-                    this.discussionObject.createPost(null, content).savePost()
+                    this.discussionThread.createPost(null, content)
+                        .savePost(this.discussionThread)
                         .then(() => this.cleanup('create', content));
                 }
             }
@@ -70,7 +70,7 @@ module ap.discussionThread {
 
         deletePost(post: Post) {
             var hasChildren = false;
-            _.each(this.discussionObject.posts, (p) => {
+            _.each(this.discussionThread.posts, (p) => {
                 if (p.parentId === post.id) {
                     hasChildren = true;
                     return;
@@ -84,7 +84,7 @@ module ap.discussionThread {
             var confirmation = window.confirm('Are you sure you want to delete this comment?');
             if (confirmation) {
                 this.negotiatingWithServer = true;
-                post.deletePost()
+                post.deletePost(this.discussionThread)
                     .then(() => this.cleanup('delete'));
             }
         }

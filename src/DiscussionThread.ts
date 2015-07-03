@@ -7,12 +7,12 @@ module ap.discussionThread {
     export interface IDiscussionThread {
         createPost(parentId: number, content: string): Post;
         getDiscussionAttributeName(): string;
-        getListItem(): ap.IListItem<any>;
+        getListItem(): ap.ListItem<any>;
         getNextId(): number;
         posts: Post[];
         prune(): void;
         reset(): void;
-        saveChanges(): ng.IPromise<ap.IListItem<any>>;
+        saveChanges(): ng.IPromise<ap.ListItem<any>>;
     }
 	
 	/**
@@ -23,10 +23,10 @@ module ap.discussionThread {
 	 * @returns {object} Newly instantiated discussion object.
 	 */
     export class DiscussionThread implements IDiscussionThread {
+        getDiscussionAttributeName: () => string;
+        getListItem: () => ap.ListItem<any>;
         posts: Post[] = [];
-        getListItem;
-        getDiscussionAttributeName;
-        constructor(listItem: ap.IListItem<any>, discussionAttributeName = 'discussionThread') {
+        constructor(listItem: ap.ListItem<any>, discussionAttributeName = 'discussionThread') {
             
             /** Protect these two paramaters to prevent saving to SharePoint */
             this.getListItem = () => listItem;
@@ -35,7 +35,7 @@ module ap.discussionThread {
             _.assign(this, listItem[discussionAttributeName]);
 
             _.each(this.posts, (post, index) => {
-                this.posts[index] = new Post(post, this);
+                this.posts[index] = new Post(post);
             });
         }
         createPost(parentId: number, content: string): Post {
@@ -45,7 +45,7 @@ module ap.discussionThread {
                 parentId: parentId || 0,
                 created: new Date(),
                 user: user
-            }, this);
+            });
 
             this.posts.push(newPost);
             return newPost;
@@ -69,7 +69,7 @@ module ap.discussionThread {
         reset(): void {
             this.posts.length = 0;
         }
-        saveChanges(): ng.IPromise<ap.IListItem<any>> {
+        saveChanges(): ng.IPromise<ap.ListItem<any>> {
             this.prune();
             var listItem = this.getListItem();
             return listItem.saveFields([this.getDiscussionAttributeName()]);

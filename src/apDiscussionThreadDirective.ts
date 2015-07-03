@@ -4,8 +4,6 @@
 module ap.discussionThread {
     'use strict';
     
-    
-
     export var APDiscussionThreadDirective = () => {
         var directive = {
             controller: DiscussionThreadController,
