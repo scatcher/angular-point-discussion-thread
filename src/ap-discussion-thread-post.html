@@ -6,9 +6,9 @@
 			<span class="post-date">{{ post.created | date:'short' }}</span>
 			<button type="button" class="btn btn-link btn-sm" ng-disabled="vm.negotiatingWithServer"
 			ng-click="vm.respondingTo = post">
-				<i class="fa fa-mail-reply"></i>Reply</button>
+				<i class="fa fa-mail-reply"></i>&nbsp;Reply</button>
 			<button type="button" class="btn btn-link btn-sm" ng-disabled="vm.negotiatingWithServer" ng-click="vm.deletePost(post)">
-				<i class="fa fa-trash-o"></i>Delete</button>
+				<i class="fa fa-trash-o"></i>&nbsp;Delete</button>
 		</small>
 	</blockquote>
 	<div ng-if="vm.respondingTo === post">
