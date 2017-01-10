@@ -1,8 +1,15 @@
-node_modules/
-bower_components/
-*.log
-.idea
+node_modules
+
+reports
+typings
+out
 .tmp
-.grunt
+docs
+
+# Private
+/config/_private.conf.json
 .DS_Store
-.settings
+
+# IDE
+.idea
+.vscode

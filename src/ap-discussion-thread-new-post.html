@@ -1,15 +1,15 @@
 <new-post class="row" ng-form="newPost">
 	<div class="col-xs-12">
 		<div class="form-group">
-			<textarea msd-elastic class="form-control" placeholder="Enter a comment..." ng-model="vm[tempState]"></textarea>
+			<textarea msd-elastic class="form-control" placeholder="Enter a comment..." ng-model="$ctrl[tempState]"></textarea>
 			<h5>
 				<small>
 					<label class="pull-right">
-						<a class="btn btn-primary btn-sm" href ng-disabled="vm.negotiatingWithServer" ng-click="vm.createPost(vm[tempState], post)">
-                            <i class="fa fa-save"></i>&nbsp;Save
+						<a class="btn btn-primary btn-sm" href ng-disabled="$ctrl.negotiatingWithServer" ng-click="$ctrl.createPost($ctrl[tempState], post)">
+                            <i class="fa fa-save"></i> Save
                         </a>
-						<a class="btn btn-default btn-sm" href ng-disabled="vm.negotiatingWithServer" ng-click="vm.clearTempVars()">
-                            <i class="fa fa-undo"></i>&nbsp;Clear
+						<a class="btn btn-default btn-sm" href ng-disabled="$ctrl.negotiatingWithServer" ng-click="$ctrl.clearTempVars()">
+                            <i class="fa fa-undo"></i> Clear
                         </a>
 					</label>
 				</small>

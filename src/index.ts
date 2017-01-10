@@ -1,11 +1,8 @@
-/// <reference path="../typings/ap.d.ts" />
-/// <reference path="../typings/tsd.d.ts" />
+import {DiscussionThreadFactory} from './apDiscussionThreadFactory';
+import {APDiscussionThreadComponent} from './apDiscussionThreadComponent';
+import {AngularPointModule} from 'angular-point';
+// import {AngularPointModule} from '../angular-point';
 
-module ap.discussionThread {
-    'use strict';
-
-    angular
-        .module('angularPoint')
-        .service('apDiscussionThreadFactory', DiscussionThreadFactory)
-        .directive('apDiscussionThread', APDiscussionThreadDirective);
-}
+AngularPointModule
+    .service('apDiscussionThreadFactory', DiscussionThreadFactory)
+    .component('apDiscussionThread', APDiscussionThreadComponent);
