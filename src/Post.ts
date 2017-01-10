@@ -2,7 +2,6 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 
 import {IUser} from 'angular-point';
-// import {IUser} from '../angular-point/factories/apUserFactory';
 import {DiscussionThread} from './DiscussionThread';
 
 

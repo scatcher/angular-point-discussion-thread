@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import * as toastr from 'toastr';
 import {ListItem} from 'angular-point';
-import {IScope} from 'angular';
 import {DiscussionThreadFactory} from './apDiscussionThreadFactory';
 import {DiscussionThread} from './DiscussionThread';
 import {Post} from './Post';
