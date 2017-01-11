@@ -1,4 +1,5 @@
-import {ListItem} from 'angular-point';
+import { ListItem } from 'angular-point';
+
 import {DiscussionThread} from './DiscussionThread';
 
 /** Share within module */

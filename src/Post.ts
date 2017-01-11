@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import * as _ from 'lodash';
 
-import {IUser} from 'angular-point';
+import {User, ListItem} from 'angular-point';
 import {DiscussionThread} from './DiscussionThread';
 
 
@@ -10,7 +10,7 @@ export class Post {
     content: string;
     id: number;
     parentId: number;
-    user: IUser;
+    user: User;
 
     constructor(post) {
         _.assign(this, post);

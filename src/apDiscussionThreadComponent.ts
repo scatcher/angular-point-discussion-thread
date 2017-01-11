@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import * as toastr from 'toastr';
+
 import {ListItem} from 'angular-point';
 import {DiscussionThreadFactory} from './apDiscussionThreadFactory';
 import {DiscussionThread} from './DiscussionThread';
@@ -7,12 +8,12 @@ import {Post} from './Post';
 
 
 interface IControllerScope extends ng.IScope {
-    changeEvent?(action: string, content?: string): void;
     fieldName?: string;
     listItem: ListItem<any>;
+    changeEvent?(action: string, content?: string): void;
 }
 
-class DiscussionThreadController {
+export class DiscussionThreadController {
     static $inject = ['apDiscussionThreadFactory', '$templateCache'];
     changeEvent: (action: string, content?: string) => void;
     discussionThread: DiscussionThread;
@@ -32,7 +33,7 @@ class DiscussionThreadController {
 
     }
 
-    $onChanges(changesObj: ng.IOnChangesObject) {
+    $onChanges(changesObj: ng.IOnChangesObject | any) {
         if (changesObj.listItem) {
             this.discussionThread = changesObj.listItem.currentValue[this.fieldName];
         }

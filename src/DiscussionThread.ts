@@ -1,15 +1,16 @@
 import * as _ from 'lodash';
-import {ListItem} from 'angular-point';
+import { ListItem } from 'angular-point';
+
 import {Post} from './Post';
 import {user} from './apDiscussionThreadFactory';
 
 
 export interface IDiscussionThread {
+    posts: Post[];
     createPost(parentId: number, content: string): Post;
     getDiscussionAttributeName(): string;
     getListItem(): ListItem<any>;
     getNextId(): number;
-    posts: Post[];
     prune(): void;
     reset(): void;
     saveChanges(): ng.IPromise<ListItem<any>>;
